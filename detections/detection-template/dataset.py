@@ -27,7 +27,6 @@ class Dataset(data.Dataset):
 
 
 class DetectionsToList:
-
     def __init__(self, data_root, stage):
         
         # Root folder for data
@@ -56,5 +55,6 @@ class DetectionsToList:
 
 
     def load_annotations(self):
+        
         return 
     
