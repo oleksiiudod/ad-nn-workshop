@@ -1,11 +1,9 @@
-import torch
-from torch.utils.data import random_split, DataLoader
-from torchvision import transforms
 
+from torch.utils.data import DataLoader
 import pytorch_lightning as pl
 
-from torchvision import transforms
 from dataset import DetectionDataset
+from utils import extended_collate
 
 
 class MyDataModule(pl.LightningDataModule):
@@ -14,6 +12,7 @@ class MyDataModule(pl.LightningDataModule):
 
         self.batch_size = batch_size
         self.data_dir = data_dir
+        self.num_threads = 0
 
         # Define any augmentation/preprocessing transforms
         self.transform = transform
@@ -21,7 +20,7 @@ class MyDataModule(pl.LightningDataModule):
         ###### Define your dataset HERE ########
         self.data_train = DetectionDataset(self.data_dir, "train", self.transform)
         self.data_val = DetectionDataset(self.data_dir, "val", self.transform)
-        self.data_test = None
+        self.data_test = DetectionDataset(self.data_dir, "val", self.transform)
         ########################################
 
     def prepare_data(self):
@@ -45,10 +44,25 @@ class MyDataModule(pl.LightningDataModule):
         Create the training dataloader that will parse the dataset.
         Usually it just acts to wrap the dataset class defined previously.
         """
-        return DataLoader(self.data_train, batch_size=self.batch_size)
+        return DataLoader(self.data_train, 
+            batch_size=self.batch_size,
+            shuffle=True,
+            num_workers=self.num_threads,
+            collate_fn=extended_collate,
+            )
 
     def val_dataloader(self):
-        return DataLoader(self.data_val, batch_size=self.batch_size)
+        return DataLoader(self.data_val, 
+            batch_size=self.batch_size,
+            shuffle=False,
+            num_workers=self.num_threads,
+            collate_fn=extended_collate,
+            )
 
     def test_dataloader(self):
-        return DataLoader(self.data_test, batch_size=self.batch_size)
+        return DataLoader(self.data_test, 
+            batch_size=self.batch_size,            
+            shuffle=False,
+            num_workers=self.num_threads,
+            collate_fn=extended_collate,
+            )
