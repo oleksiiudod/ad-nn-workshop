@@ -83,17 +83,6 @@ class DataExtractor:
         anno_array = pd.read_csv(
             anno_path, header=None, delimiter=r"\s+", dtype=float
         )._values
-        # except pd.errors.EmptyDataError:
-        #     anno_array = None
-        # anno_array = np.loadtxt(anno_path)
-
-        # # Empty Case
-        # if anno_array.shape[0] == 0:
-        #     return anno_array
-
-        # # 1D cases
-        # elif anno_array.ndim == 1:
-        #     anno_array = anno_array.reshape(1, -1)
 
         # Get labels
         labels = anno_array[:, 0]
@@ -118,26 +107,6 @@ class DataExtractor:
             ],
             axis=1,
         )
-
-        bboxes = np.vstack(list(bboxes))
-
-        #     gt_boxes = np.zeros((0, 4), dtype=np.int32)
-
-        # if len(gt_angles_list) > 0:
-        #     gt_angles = np.vstack(gt_angles_list)
-        # else:
-        #     gt_angles = np.zeros((0, 4), dtype=np.float32)
-
-        # if len(gt_classes_list) > 0:
-        #     gt_classes = np.hstack(gt_classes_list).astype(np.int32)
-        # else:
-        #     gt_classes = np.zeros((0, 4), dtype=np.int32)
-
-        # result = {
-        #     "gt_boxes": gt_boxes,
-        #     "gt_angles": gt_angles,
-        #     "gt_classes": gt_classes,
-        # }
 
         return {"bboxes": bboxes, "labels": labels}
 

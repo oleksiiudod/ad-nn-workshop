@@ -63,3 +63,16 @@ class MyModel(pl.LightningModule):
 
     def process_batch(self):
         pass
+        # detection_labelmap = (
+        #     "car",
+        #     "bus",
+        #     "bike",
+        #     "motorbike",
+        #     "mobility_device",
+        #     "people",
+        #     "wheel",
+        #     "robot",
+        #     "stroller",
+        #     "scooter_with_person",
+        #     "scooter_without_person",
+        # )
