@@ -38,19 +38,11 @@ class FasterRcnnFpn(LightningModule):
     def validation_step(self, batch, batch_idx):
         x, y = self.process_batch(batch)
         preds = self.forward(x)
-        self.accuracy(preds, y)
+        self.accuracy(preds, y)  # you might need to use a more suitable metric
 
         # calculating validation loss is not possible for the current torchvision.models
         # implementation without impacting training process
         self.log("val_acc", self.accuracy, prog_bar=True)
-
-    def test_step(self, batch, batch_idx):
-        # Here we just reuse the validation_step for testing
-        return self.validation_step(batch, batch_idx)
-
-    def configure_optimizers(self):
-        optimizer = torch.optim.Adam(self.parameters(), lr=self.learning_rate)
-        return optimizer
 
     def process_batch(self, batch):
         images, bboxes, labels = batch[0]
@@ -76,3 +68,11 @@ class FasterRcnnFpn(LightningModule):
         image_list = torch.stack(image_list)
 
         return image_list, annotations_list
+
+    def test_step(self, batch, batch_idx):
+        # Here we just reuse the validation_step for testing
+        return self.validation_step(batch, batch_idx)
+
+    def configure_optimizers(self):
+        optimizer = torch.optim.Adam(self.parameters(), lr=self.learning_rate)
+        return optimizer
