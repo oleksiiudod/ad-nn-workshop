@@ -23,7 +23,7 @@ else:
 def extended_collate(batch, depth=0, collate_first_n=2):
     """
     Puts each data field into a tensor with outer dimension batch size.
-    Dmitry Khzibullin: iteratively collate only first 2 items: image and target.
+    (Iteratively collate only first 2 items: image and target)
     """
 
     depth += 1
@@ -53,12 +53,10 @@ def extended_collate(batch, depth=0, collate_first_n=2):
             return torch.stack([torch.from_numpy(b) for b in batch], 0)
         if elem.shape == ():  # scalars
             return torch.as_tensor(batch)
-    #            py_type = float if elem.dtype.name.startswith('float') else int
-    #            return numpy_type_map[elem.dtype.name](list(map(py_type, batch)))
+
     elif isinstance(batch[0], string_classes):
         return batch
     elif isinstance(batch[0], collections.Mapping):
-        # return {key: extended_collate([d[key] for d in batch], depth=depth) for key in batch[0]}
         return {key: [d[key] for d in batch] for key in batch[0]}
     elif isinstance(batch[0], collections.Sequence):
         transposed = [v for v in zip(*batch)]
