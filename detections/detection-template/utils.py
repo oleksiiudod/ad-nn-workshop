@@ -66,7 +66,9 @@ def extended_collate(batch, depth=0, collate_first_n=2):
             num_first = len(transposed)
         transposed_process = transposed[:num_first]
         transposed_noprocess = transposed[num_first:]
-        collated = [extended_collate(samples, depth=depth) for samples in transposed_process]
+        collated = [
+            extended_collate(samples, depth=depth) for samples in transposed_process
+        ]
         merged = [*collated, *transposed_noprocess]
         return merged
     else:

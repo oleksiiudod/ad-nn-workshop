@@ -1,4 +1,3 @@
-
 from torch.utils.data import DataLoader
 import pytorch_lightning as pl
 
@@ -44,25 +43,28 @@ class MyDataModule(pl.LightningDataModule):
         Create the training dataloader that will parse the dataset.
         Usually it just acts to wrap the dataset class defined previously.
         """
-        return DataLoader(self.data_train, 
+        return DataLoader(
+            self.data_train,
             batch_size=self.batch_size,
             shuffle=True,
             num_workers=self.num_threads,
             collate_fn=extended_collate,
-            )
+        )
 
     def val_dataloader(self):
-        return DataLoader(self.data_val, 
+        return DataLoader(
+            self.data_val,
             batch_size=self.batch_size,
             shuffle=False,
             num_workers=self.num_threads,
             collate_fn=extended_collate,
-            )
+        )
 
     def test_dataloader(self):
-        return DataLoader(self.data_test, 
-            batch_size=self.batch_size,            
+        return DataLoader(
+            self.data_test,
+            batch_size=self.batch_size,
             shuffle=False,
             num_workers=self.num_threads,
             collate_fn=extended_collate,
-            )
+        )
