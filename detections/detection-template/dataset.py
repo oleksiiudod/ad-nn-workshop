@@ -26,9 +26,6 @@ class DetectionDataset(data.Dataset):
         # Apply transforms
         img_tensor = self.transform(img)
 
-        # Reshape Open CV -> Pytorch format
-        # (128, 1280, 3) -> (3, 128, 1280)
-        img_tensor = img_tensor.permute(2, 0, 1)
         return img_tensor, anno
 
     def __len__(self):

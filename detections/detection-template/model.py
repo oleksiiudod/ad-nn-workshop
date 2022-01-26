@@ -15,7 +15,7 @@ class MyModel(pl.LightningModule):
         self.learning_rate = 1e-3
 
         ###### Define your model HERE ########
-        self.backbone = ResNet(ResidualBlock, num_classes=10)
+        self.model = ResNet(ResidualBlock, num_classes=1)
         ######################################
 
     def forward(self, x):
@@ -31,7 +31,21 @@ class MyModel(pl.LightningModule):
         This defines the training loop and the operations applied to
         every batch of training data loaded.
         """
-        print(batch)  # First step
+        # Image, number of cars
+
+        img, annotation = self.process_batch(batch)
+        prediction = self.forward(img)
+
+        annotation = (
+            torch.tensor(annotation, dtype=torch.float).unsqueeze(-1).to(self.device)
+        )
+
+        print("predictions: ", prediction[:10])
+        print("annotation: ", annotation[:10])
+
+        loss = F.mse_loss(annotation, prediction)
+        self.log("loss", loss, on_step=True, on_epoch=True, prog_bar=True, logger=True)
+        return loss
 
         ############# Example ##############
         # x, y = batch
@@ -45,6 +59,19 @@ class MyModel(pl.LightningModule):
         This defines the validation loop and the operations applied to
         every batch of validation data loaded.
         """
+        img, annotation = self.process_batch(batch)
+        prediction = self.forward(img)
+
+        annotation = (
+            torch.tensor(annotation, dtype=torch.float).unsqueeze(-1).to(self.device)
+        )
+
+        print("validation predictions: ", prediction[:10])
+        print("validation annotation: ", annotation[:10])
+
+        loss = F.mse_loss(annotation, prediction)
+        self.log("val loss", loss, on_step=True, prog_bar=True, logger=True)
+        return loss
         ############# Example ##############
         # x, y = batch
         # y_prediction = self.forward(x)
@@ -61,8 +88,22 @@ class MyModel(pl.LightningModule):
         optimizer = torch.optim.Adam(self.parameters(), lr=self.learning_rate)
         return optimizer
 
-    def process_batch(self):
-        pass
+    def process_batch(self, batch):
+        img, annotation = batch
+
+        labels_batch = annotation["labels"]
+        new_labels_batch = []
+
+        for i in range(len(labels_batch)):
+            labels = labels_batch[i]
+            no_cars = 0
+
+            for j in range(len(labels)):
+                if labels[j] == 0:
+                    no_cars += 1
+            new_labels_batch.append(no_cars)
+
+        return img, np.array(new_labels_batch)
         # detection_labelmap = (
         #     "car",
         #     "bus",

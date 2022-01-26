@@ -17,13 +17,13 @@ if __name__ == "__main__":
     data_root = "/home/steffen/dev/ad-nn-workshop/detections/detection-data"
 
     # Initialize DataModule
-    dm = MyDataModule(batch_size=64, transform=transform, data_dir=data_root)
+    dm = MyDataModule(batch_size=32, transform=transform, data_dir=data_root)
 
     # Initialize model
     model = MyModel()
 
-    # # Initialize trainer
-    # trainer = pl.Trainer()
+    # Initialize trainer
+    trainer = pl.Trainer(gpus=1)
 
-    # # Run training
-    # trainer.fit(model, dm)
+    # Run training
+    trainer.fit(model, dm)

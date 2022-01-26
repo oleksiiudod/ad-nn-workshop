@@ -59,12 +59,13 @@ class ResNet(nn.Module):
             nn.ReLU(),
         )
 
-        self.layer1 = self.make_layer(ResidualBlock, 64, 2, stride=1)
-        self.layer2 = self.make_layer(ResidualBlock, 128, 2, stride=2)
-        self.layer3 = self.make_layer(ResidualBlock, 256, 2, stride=2)
-        self.layer4 = self.make_layer(ResidualBlock, 512, 2, stride=2)
+        self.layer1 = self.make_layer(ResidualBlock, 4, 2, stride=1)
+        self.layer2 = self.make_layer(ResidualBlock, 8, 2, stride=2)
+        self.layer3 = self.make_layer(ResidualBlock, 16, 2, stride=2)
+        self.layer4 = self.make_layer(ResidualBlock, 32, 2, stride=2)
         self.maxpool = MaxPool2d(4)
-        self.fc = nn.Linear(512, num_classes)
+
+        self.fc = nn.Linear(5120, num_classes)
 
     def make_layer(self, block, channels, num_blocks, stride):
         strides = [stride] + [1] * (num_blocks - 1)

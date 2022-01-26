@@ -11,7 +11,7 @@ class MyDataModule(pl.LightningDataModule):
 
         self.batch_size = batch_size
         self.data_dir = data_dir
-        self.num_threads = 0
+        self.num_threads = 8
 
         # Define any augmentation/preprocessing transforms
         self.transform = transform
