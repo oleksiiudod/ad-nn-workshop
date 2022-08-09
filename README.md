@@ -1,4 +1,4 @@
-# ad-nn-workshop
+# nn-workshop
 code samples for the workshop
 
 1. Install miniconda from https://docs.conda.io/en/latest/miniconda.html
