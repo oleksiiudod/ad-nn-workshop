@@ -80,8 +80,6 @@ def extended_collate(batch, depth=0, collate_first_n=2):
 
 
 
-
-
 def save_example(img, gt, pred, path):
     """Visualize predictions and ground truths"""
 

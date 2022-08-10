@@ -6,10 +6,12 @@ import pytorch_lightning as pl
 from pytorch_lightning.loggers import TensorBoardLogger
 from pytorch_lightning.callbacks import ModelCheckpoint
 
-from torchvision import transforms
+from torch.utils.data import DataLoader
+from utils import extended_collate
 
 from data_module import DataModule
-from model import MyModel
+from dataset import ObjectDetectionDataset
+from module import ObjectDetector
 
 
 def parse_args():
@@ -24,7 +26,6 @@ def parse_args():
     return args
 
 
-
 if __name__=="__main__":
 
     # Get arguments
@@ -36,9 +37,6 @@ if __name__=="__main__":
 
     # data_root = "/home/steffen/data/nn-workshop-data"
 
-    # Define Augmentation 
-    transform = transforms.Compose([transforms.ToTensor(),])
-
     # Define logs & checkpoints
     logger = [TensorBoardLogger("~/pytorch_logs", name="Workshop")]
     checkpoint_callback = ModelCheckpoint(
@@ -48,14 +46,32 @@ if __name__=="__main__":
         mode="min",
     )
 
-    # Initialize DataModule
-    dm = DataModule(batch_size=32, transform=transform, data_dir=args.data_dir)
+    
+    ####### TODO: Define parameters #########
+    batch_size = 64
+    num_threads = 8
+    #########################################
+
+
+    ###### TODO: Initialize dataset #########
+    data_train = None
+    data_val = None
+    #########################################
+
+
+    #### TODO: Initialize dataloader ########
+    train_dataloader = None
+    val_dataloader = None
+    #########################################
+
+
+    # Alternative option initialize DataModule
+
 
     # Initialize model
-    model = MyModel(save_imgs=args.save_imgs)
+
 
     # Initialize trainer
-    trainer = pl.Trainer(logger=logger, callbacks=[checkpoint_callback])
+
 
     # Run training
-    trainer.fit(model, dm)

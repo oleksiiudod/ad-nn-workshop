@@ -1,4 +1,5 @@
 import torch.utils.data as data
+from torchvision import transforms
 
 import numpy as np
 import pandas as pd
@@ -7,12 +8,21 @@ import cv2
 
 
 class ObjectDetectionDataset(data.Dataset):
-    """ Dataset wrapper class """
+    """ 
+    Dataset wrapper class used to access data
+    
+    :param data_dir:
+        string of the path to local input raw data folder
 
-    def __init__(self, data_dir, stage, transform, img_shape=[1280, 128], out_shape=[160, 16]):
+    :param stage:
+        string of either train or val specifying which part of data to load
+    """
+
+    def __init__(self, data_dir, stage, img_shape=[1280, 128], out_shape=[160, 16]):
         super().__init__()
+
         self.stage = stage
-        self.transform = transform
+        self.transform = transforms.Compose([transforms.ToTensor(),])
         self.data_list = DataExtractor(data_dir, stage, img_shape, out_shape)
 
     def __getitem__(self, index):
@@ -84,7 +94,7 @@ class DataExtractor:
 
         # Get labels
         labels = anno_array[:, 0]
-        filter = np.where(labels != [6])[0]
+        filter = np.where(labels != [6])[0] # This gets rid of 
 
         # Create map
         centers = np.zeros((self.out_h, self.out_w))
