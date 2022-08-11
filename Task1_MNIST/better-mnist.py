@@ -111,10 +111,11 @@ class LitMNIST(LightningModule):
         return DataLoader(self.mnist_test, batch_size=BATCH_SIZE, num_workers=4)
 
 
+epoch_num = 1
 model = LitMNIST()
 trainer = Trainer(
     gpus=AVAIL_GPUS,
-    max_epochs=1,
+    max_epochs=epoch_num,
     callbacks=[TQDMProgressBar(refresh_rate=20)],
 )
 trainer.fit(model)
@@ -152,14 +153,15 @@ def visualize_result(epoch_num):
     grid.save(f"result_{epoch_num}.png")
 
 
-visualize_result(1)
+visualize_result(epoch_num)
 
+epoch_num = 5
 trainer = Trainer(
     gpus=AVAIL_GPUS,
-    max_epochs=5,
+    max_epochs=epoch_num,
     callbacks=[TQDMProgressBar(refresh_rate=20)],
 )
 trainer.fit(model)
-visualize_result(5)
+visualize_result(epoch_num)
 
 trainer.test(ckpt_path="best")
