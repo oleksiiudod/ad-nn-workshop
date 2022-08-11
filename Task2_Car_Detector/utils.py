@@ -42,7 +42,7 @@ def extended_collate(batch, depth=0, collate_first_n=2):
             out = batch[0].new(storage)
 
         return torch.stack(batch, 0, out=out)
-    
+
     elif (
         elem_type.__module__ == "numpy"
         and elem_type.__name__ != "str_"
@@ -79,31 +79,31 @@ def extended_collate(batch, depth=0, collate_first_n=2):
         return batch
 
 
-
 def save_example(img, gt, pred, path):
     """Visualize predictions and ground truths"""
 
     # Reorder channels for cv2 format
-    img = img.clone().permute(1, 2, 0).cpu().detach().numpy()*255
+    img = img.clone().permute(1, 2, 0).cpu().detach().numpy() * 255
     img_h, img_w, _ = img.shape
 
     # Ground Truth
     gt = gt.cpu().detach().numpy().astype(np.float32)
-    gt = np.round(cv2.resize(gt, dsize=(img_w, img_h),interpolation=cv2.INTER_AREA))
+    gt = np.round(cv2.resize(gt, dsize=(img_w, img_h), interpolation=cv2.INTER_AREA))
 
     for i in range(img_h):
         for j in range(img_w):
-            if gt[i,j] == 1:
-                img[i,j] = (255, 0, 0)
-    
+            if gt[i, j] == 1:
+                img[i, j] = (255, 0, 0)
+
     # Prediction
     pred = torch.argmax(pred, dim=0).cpu().detach().numpy().astype(np.float32)
-    pred = np.round(cv2.resize(pred, dsize=(img_w, img_h),interpolation=cv2.INTER_AREA))
+    pred = np.round(
+        cv2.resize(pred, dsize=(img_w, img_h), interpolation=cv2.INTER_AREA)
+    )
 
     for i in range(img_h):
         for j in range(img_w):
-            if pred[i,j] == 1:
-                img[i,j] = (0, 255, 0)
+            if pred[i, j] == 1:
+                img[i, j] = (0, 255, 0)
 
     cv2.imwrite(path, img)
-

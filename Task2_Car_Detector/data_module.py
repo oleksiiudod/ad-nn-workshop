@@ -19,19 +19,18 @@ class DataModule(pl.LightningDataModule):
         self.data_val = None
         #########################################
 
-
     def prepare_data(self):
         """
-        Any preparatory steps that need to be done regarding the 
-        data. Will be done once before training in a single process. 
+        Any preparatory steps that need to be done regarding the
+        data. Will be done once before training in a single process.
         Could include things like downloading data etc.
         """
         # Note that if it doesn't apply to your use case then just skip
         pass
 
-    def setup(self, stage = None):
+    def setup(self, stage=None):
         """
-        Data operations you might want to perform on every GPU. 
+        Data operations you might want to perform on every GPU.
         """
         # Note that if it doesn't apply to your use case then just skip
         pass
@@ -41,8 +40,21 @@ class DataModule(pl.LightningDataModule):
         Create the training dataloader that will parse the dataset.
         Usually it just acts to wrap the dataset class defined previously.
         """
-        return None
-    
+
+        #### TODO: Init train dataloader ########
+
+        train_dataloader = None
+
+        #########################################
+
+        return train_dataloader
+
     def val_dataloader(self):
-        
-        return None
+
+        #### TODO: Init val dataloader ##########
+
+        val_dataloader = None
+
+        #########################################
+
+        return val_dataloader

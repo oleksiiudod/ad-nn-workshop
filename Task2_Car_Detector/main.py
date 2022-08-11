@@ -26,7 +26,9 @@ def parse_args():
     return args
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
+
+    # Link to data: https://drive.google.com/drive/folders/1RShkXPuXaYMGOFpWDZ40e2Gx3CWVVdkz?usp=sharing
 
     # Get arguments
     args = parse_args()
@@ -34,8 +36,6 @@ if __name__=="__main__":
     # Check local data directory exits
     if not os.path.exists(args.data_dir):
         raise Exception("Data directory does not exist")
-
-    # data_root = "/home/steffen/data/nn-workshop-data"
 
     # Define logs & checkpoints
     logger = [TensorBoardLogger("~/pytorch_logs", name="Workshop")]
@@ -46,32 +46,26 @@ if __name__=="__main__":
         mode="min",
     )
 
-    
-    ####### TODO: Define parameters #########
+    #### TODO: Define parameters #########
     batch_size = 64
     num_threads = 8
-    #########################################
 
-
-    ###### TODO: Initialize dataset #########
+    #### TODO: Initialize dataset ########
     data_train = None
     data_val = None
-    #########################################
 
-
-    #### TODO: Initialize dataloader ########
+    #### TODO: Initialize dataloader #####
+    # Option 1: Create dataloader directly
     train_dataloader = None
     val_dataloader = None
-    #########################################
 
+    # Option 2: Fill in data_module.py
+    dm = DataModule()
 
-    # Alternative option initialize DataModule
+    #### TODO: Initialize your model #####
+    model = None
 
+    #### TODO: Initialize trainer ########
+    trainer = None
 
-    # Initialize model
-
-
-    # Initialize trainer
-
-
-    # Run training
+    #### TODO: Run training loop  ########
