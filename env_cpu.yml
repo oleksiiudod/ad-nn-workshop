@@ -10,6 +10,8 @@ dependencies:
   - pytorch::cpuonly
   - pytorch-lightning>=1.4
   - pip
+  - pandas
   - pip:
+    - opencv-python-headless
     - torchmetrics>=0.6
 

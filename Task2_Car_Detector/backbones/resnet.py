@@ -58,9 +58,10 @@ class ResNet(nn.Module):
             nn.BatchNorm2d(64),
             nn.ReLU(),
         )
-
         self.layer1 = self.make_layer(ResidualBlock, 4, 2, stride=1)
         self.layer2 = self.make_layer(ResidualBlock, 8, 2, stride=2)
+
+        # Uncomment for bigger model
         # self.layer3 = self.make_layer(ResidualBlock, 16, 2, stride=2)
         # self.layer4 = self.make_layer(ResidualBlock, 32, 2, stride=1)
         self.maxpool = MaxPool2d(4)
@@ -80,6 +81,8 @@ class ResNet(nn.Module):
 
         x = self.layer1(x)
         x = self.layer2(x)
+        
+        # Uncomment for bigger model 
         # x = self.layer3(x)
         # x = self.layer4(x)
 
