@@ -9,7 +9,7 @@ from torchmetrics import Accuracy
 from torchvision import transforms
 from torchvision.datasets import MNIST
 from pytorch_lightning.callbacks.progress import TQDMProgressBar
-
+from PIL import Image, ImageDraw
 
 PATH_DATASETS = os.environ.get("PATH_DATASETS", ".")
 AVAIL_GPUS = min(1, torch.cuda.device_count())
@@ -114,9 +114,52 @@ class LitMNIST(LightningModule):
 model = LitMNIST()
 trainer = Trainer(
     gpus=AVAIL_GPUS,
-    max_epochs=50,
+    max_epochs=1,
     callbacks=[TQDMProgressBar(refresh_rate=20)],
 )
 trainer.fit(model)
 
-trainer.test(ckpt_path='best')
+mnist = MNIST(
+    PATH_DATASETS,
+    train=False,
+)
+
+
+def image_grid(imgs, rows, cols):
+    assert len(imgs) == rows * cols
+
+    w, h = imgs[0].size
+    grid = Image.new("RGB", size=(cols * w, rows * h))
+    grid_w, grid_h = grid.size
+
+    for i, img in enumerate(imgs):
+        grid.paste(img, box=(i % cols * w, i // cols * h))
+    return grid
+
+
+def visualize_result(epoch_num):
+    imgs = []
+    for i in range(100):
+        img = mnist[i][0]
+        # gt = mnist[i][1]
+        logits = model.forward(model.transform(img))
+        pred = torch.argmax(logits, dim=1)
+        draw = ImageDraw.Draw(img)
+        draw.text((0, 0), str(int(pred[0])), 255)
+        imgs.append(img)
+
+    grid = image_grid(imgs, rows=10, cols=10)
+    grid.save(f"result_{epoch_num}.png")
+
+
+visualize_result(1)
+
+trainer = Trainer(
+    gpus=AVAIL_GPUS,
+    max_epochs=5,
+    callbacks=[TQDMProgressBar(refresh_rate=20)],
+)
+trainer.fit(model)
+visualize_result(5)
+
+trainer.test(ckpt_path="best")
