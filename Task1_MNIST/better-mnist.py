@@ -8,10 +8,13 @@ from torch.utils.data import DataLoader, random_split
 from torchmetrics import Accuracy
 from torchvision import transforms
 from torchvision.datasets import MNIST
+from pytorch_lightning.callbacks.progress import TQDMProgressBar
+
 
 PATH_DATASETS = os.environ.get("PATH_DATASETS", ".")
 AVAIL_GPUS = min(1, torch.cuda.device_count())
 BATCH_SIZE = 256 if AVAIL_GPUS else 64
+
 
 class LitMNIST(LightningModule):
     def __init__(self, data_dir=PATH_DATASETS, hidden_size=64, learning_rate=2e-4):
@@ -55,7 +58,7 @@ class LitMNIST(LightningModule):
     def training_step(self, batch, batch_idx):
         x, y = batch
         logits = self(x)
-        loss = F.nll_loss(logits, y)
+        loss = F.nll_loss(logits, y)  # negative log likelihood
         return loss
 
     def validation_step(self, batch, batch_idx):
@@ -99,20 +102,21 @@ class LitMNIST(LightningModule):
             self.mnist_test = MNIST(self.data_dir, train=False, transform=self.transform)
 
     def train_dataloader(self):
-        return DataLoader(self.mnist_train, batch_size=BATCH_SIZE)
+        return DataLoader(self.mnist_train, batch_size=BATCH_SIZE, num_workers=4)
 
     def val_dataloader(self):
-        return DataLoader(self.mnist_val, batch_size=BATCH_SIZE)
+        return DataLoader(self.mnist_val, batch_size=BATCH_SIZE, num_workers=4)
 
     def test_dataloader(self):
-        return DataLoader(self.mnist_test, batch_size=BATCH_SIZE)
+        return DataLoader(self.mnist_test, batch_size=BATCH_SIZE, num_workers=4)
+
 
 model = LitMNIST()
 trainer = Trainer(
     gpus=AVAIL_GPUS,
-    max_epochs=100,
-    progress_bar_refresh_rate=20,
+    max_epochs=50,
+    callbacks=[TQDMProgressBar(refresh_rate=20)],
 )
 trainer.fit(model)
 
-trainer.test()
+trainer.test(ckpt_path='best')
